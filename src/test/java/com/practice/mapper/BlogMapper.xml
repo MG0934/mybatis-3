@@ -1,0 +1,103 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.mapper.BlogMapper">
+
+  <resultMap id="BaseResultMap" type="com.practice.bean.Blog">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="authorId" jdbcType="VARCHAR" property="authorId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+  </resultMap>
+
+  <resultMap id="BOResultMap" type="com.practice.bean.BlogCustom" extends="BaseResultMap">
+    <id column="user_id" jdbcType="VARCHAR" property="author.id" />
+    <result column="username" jdbcType="VARCHAR" property="author.username" />
+    <result column="email" jdbcType="VARCHAR" property="author.email" />
+    <result column="password" jdbcType="VARCHAR" property="author.password" />
+  </resultMap>
+
+  <resultMap id="CustomResultMap" type="com.practice.bean.BlogCustom" extends="BaseResultMap">
+    <association property="author" javaType="com.practice.bean.Auther">
+      <id column="user_id" jdbcType="INTEGER" property="id" />
+      <result column="username" jdbcType="VARCHAR" property="username" />
+      <result column="email" jdbcType="VARCHAR" property="email" />
+    </association>
+  </resultMap>
+
+  <resultMap id="blogAuthorMap" type="com.practice.bean.BlogCustom" extends="BaseResultMap">
+    <association property="author" column="author_id" select="com.practice.mapper.AutherMapper.selectById" fetchType="eager" />
+  </resultMap>
+
+  <resultMap id="blogAuthorMapLazy" type="com.practice.bean.BlogCustom" extends="BaseResultMap">
+    <association fetchType="lazy" property="author" column="author_id" select="com.practice.mapper.AutherMapper.selectById" />
+  </resultMap>
+
+  <select id="selectCutomById" parameterType="java.lang.Integer" resultType="com.practice.bean.BlogCustom">
+   SELECT
+    b.id,
+    b.title,
+    b.author_id AS authorId,
+    a.id AS "author.id",
+    a.username AS "author.username",
+    a.password AS "author.password" ,
+    a.email AS "author.email"
+  FROM blog b LEFT JOIN author a ON b.author_id=a.id
+ where b.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBoById" parameterType="java.lang.Integer" resultType="com.practice.bean.BlogBo">
+    select
+     b.id, b.title, b.author_id as authorId, a.id as userId, a.username, a.email
+    from blog b left join author a on b.author_id=a.id
+    where b.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectCutomByIdMap" parameterType="java.lang.Integer" resultMap="BOResultMap">
+   SELECT
+    b.id,
+    b.title,
+    b.author_id AS authorId,
+    a.id AS "user_id",
+    a.username,
+    a.email,
+    a.password
+  FROM blog b LEFT JOIN author a ON b.author_id=a.id
+ where b.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectCutomByIdAMap" parameterType="java.lang.Integer" resultMap="CustomResultMap">
+   SELECT
+    b.id,
+    b.title,
+    b.author_id AS authorId,
+    a.id AS "user_id",
+    a.username,
+    a.email
+  FROM blog b LEFT JOIN author a ON b.author_id=a.id
+ where b.id = #{id,jdbcType=INTEGER}
+  </select>
+
+<!--  <resultMap id="CustomResultMap" type="com.homejim.mybatis.entity.BlogCustom" extends="BaseResultMap">-->
+<!--    <association property="author" javaType="com.homejim.mybatis.entity.Author" resultMap="com.homejim.mybatis.mapper.AuthorMapper.BaseResultMap">-->
+<!--    </association>-->
+<!--  </resultMap>-->
+
+  <select id="selectBlogAndAuthorByIdSelect" parameterType="java.lang.Integer" resultMap="blogAuthorMap">
+   SELECT
+    b.id,
+    b.title,
+    b.author_id
+  FROM blog b
+ where b.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBlogAndAuthorByIdSelectByLazy" parameterType="java.lang.Integer" resultMap="blogAuthorMapLazy"> <!--resultMap="blogAuthorMap"-->
+    SELECT
+    b.id,
+    b.title,
+    b.author_id
+    FROM blog b
+    where b.id = #{id,jdbcType=INTEGER}
+  </select>
+</mapper>
