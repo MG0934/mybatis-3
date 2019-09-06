@@ -3,14 +3,21 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+
+
+  <properties resource="com/practice/jdbc.properties">
+    <property name="key2url" value="jdbc:mysql://192.168.6.4:3306/mybtais-test"/>
+  </properties>
+
   <settings>
-    <setting name="logImpl" value="LOG4J" />
+    <setting name="cacheEnabled" value="true"/>
     <setting name="lazyLoadingEnabled" value="true"/>
-    <setting name="aggressiveLazyLoading" value="false"/>
+    <setting name="autoMappingBehavior" value="PARTIAL"/>
   </settings>
 
   <typeAliases>
-    <typeAlias alias="student" type="com.practice.bean.Student"/>
+<!--    <typeAlias alias="student" type="com.practice.bean.Student"/>-->
+    <package name="com.practice.bean"/>
   </typeAliases>
 
     <environments default="development">
@@ -18,8 +25,8 @@
             <transactionManager type="JDBC">
             </transactionManager>
             <dataSource type="UNPOOLED">
-              <property name="driver" value="com.mysql.jdbc.Driver"/>
-              <property name="url" value="jdbc:mysql://192.168.6.4:3306/mybtais-test"/>
+              <property name="driver" value="${key1driver}"/>
+              <property name="url" value="${key2url}"/>
               <property name="username" value="root"/>
               <property name="password" value="root"/>
             </dataSource>

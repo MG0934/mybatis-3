@@ -45,11 +45,25 @@ import org.xml.sax.SAXParseException;
  * @author Kazuki Shimizu
  */
 public class XPathParser {
-
+  /**
+   * xml  Document  对象（xml被解析后生成的对象）
+   */
   private final Document document;
+  /**
+   * 是否需要校验（是否校验，一般情况下为true）
+   */
   private boolean validation;
+  /**
+   * xml 实体解析器
+   */
   private EntityResolver entityResolver;
+  /**
+   * 变量 Properties 对象（动态替换变量时使用）
+   */
   private Properties variables;
+  /**
+   * java xpath 对象
+   */
   private XPath xpath;
 
   public XPathParser(String xml) {
