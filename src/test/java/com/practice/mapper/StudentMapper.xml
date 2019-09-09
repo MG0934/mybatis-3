@@ -28,7 +28,7 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from student
+    from studentv
   </select>
 
   <select id="selectBetweenCreatedTime" parameterType="java.util.Map" resultMap="BaseResultMap">

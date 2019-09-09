@@ -56,6 +56,9 @@ public class XMLIncludeTransformer {
    * @param variablesContext Current context for static variables with values
    */
   private void applyIncludes(Node source, final Properties variablesContext, boolean included) {
+    System.out.println("source nodeName "+source.getNodeName());
+    System.out.println("source nodeValue "+source.getNodeValue());
+    System.out.println("source content "+source.getTextContent());
     if (source.getNodeName().equals("include")) {
       Node toInclude = findSqlFragment(getStringAttribute(source, "refid"), variablesContext);
       Properties toIncludeContext = getVariablesContext(source, variablesContext);
@@ -78,6 +81,7 @@ public class XMLIncludeTransformer {
         }
       }
       NodeList children = source.getChildNodes();
+      System.out.println("children length "+children.getLength());
       for (int i = 0; i < children.getLength(); i++) {
         applyIncludes(children.item(i), variablesContext, included);
       }
