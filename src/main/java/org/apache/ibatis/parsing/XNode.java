@@ -43,7 +43,9 @@ public class XNode {
     this.node = node;
     this.name = node.getNodeName();
     this.variables = variables;
+    //转换属性
     this.attributes = parseAttributes(node);
+    //转换body内容
     this.body = parseBody(node);
   }
 

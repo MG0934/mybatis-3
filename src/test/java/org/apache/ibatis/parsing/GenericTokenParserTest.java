@@ -45,11 +45,11 @@ class GenericTokenParserTest {
     GenericTokenParser parser = new GenericTokenParser("${", "}", new VariableTokenHandler(new HashMap<String, String>() {
       {
         put("first_name", "James");
-        put("initial", "T");
-        put("last_name", "Kirk");
-        put("var{with}brace", "Hiya");
-        put("", "");
-      }
+      put("initial", "T");
+      put("last_name", "Kirk");
+      put("var{with}brace", "Hiya");
+      put("", "");
+    }
     }));
 
     assertEquals("James T Kirk reporting.", parser.parse("${first_name} ${initial} ${last_name} reporting."));
