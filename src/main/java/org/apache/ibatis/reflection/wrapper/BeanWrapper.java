@@ -31,31 +31,43 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
  */
 public class BeanWrapper extends BaseWrapper {
 
+  /**
+   * 普通对象
+   */
   private final Object object;
   private final MetaClass metaClass;
 
   public BeanWrapper(MetaObject metaObject, Object object) {
     super(metaObject);
     this.object = object;
+    //创建metaclass
     this.metaClass = MetaClass.forClass(object.getClass(), metaObject.getReflectorFactory());
   }
 
   @Override
   public Object get(PropertyTokenizer prop) {
+    //获取集合指定位置的值
     if (prop.getIndex() != null) {
+      //获得集合类型的属性
       Object collection = resolveCollection(prop, object);
+      //获得指定位置的值
       return getCollectionValue(prop, collection);
     } else {
+      //获取属性的值
       return getBeanProperty(prop, object);
     }
   }
 
   @Override
   public void set(PropertyTokenizer prop, Object value) {
+    //设置集合指定位置的值
     if (prop.getIndex() != null) {
+      //获取集合类型的属性
       Object collection = resolveCollection(prop, object);
+      //设置指定位置的值
       setCollectionValue(prop, collection, value);
     } else {
+      //设置属性的值
       setBeanProperty(prop, object, value);
     }
   }
@@ -75,6 +87,12 @@ public class BeanWrapper extends BaseWrapper {
     return metaClass.getSetterNames();
   }
 
+  /**
+   * 获取参数类型
+   *
+   * @param name
+   * @return
+   */
   @Override
   public Class<?> getSetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
@@ -90,21 +108,40 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  /**
+   * 获取返回值类型
+   *
+   * @param name
+   * @return
+   */
   @Override
   public Class<?> getGetterType(String name) {
+    //创建分词器对象，对name进行分词
     PropertyTokenizer prop = new PropertyTokenizer(name);
+    //有子表达式
     if (prop.hasNext()) {
+      //创建metaObject对象
       MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+      //如果MetaValue为空，则基于MetaClass获取返回类型
       if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
         return metaClass.getGetterType(name);
       } else {
+        //如果MetaValue不为空，则基于MetaValue获得返回值类型
+        //例如richType.richMap.nihao ，其中 richMap 是 Map 类型，而 nihao 的类型，需要获得到 nihao 的具体值，才能做真正的判断。
         return metaValue.getGetterType(prop.getChildren());
       }
     } else {
+      //则直接返回返回值类型
       return metaClass.getGetterType(name);
     }
   }
 
+  /**
+   * 是否用指定的setter方法 与getter方法类似
+   *
+   * @param name
+   * @return
+   */
   @Override
   public boolean hasSetter(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
@@ -124,21 +161,36 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  /**
+   * 是否用指定的getter方法
+   *
+   * @param name
+   * @return
+   */
   @Override
   public boolean hasGetter(String name) {
+    //创建分词器对象，对name进行分词
     PropertyTokenizer prop = new PropertyTokenizer(name);
+    //如果有子属性存在
     if (prop.hasNext()) {
+      // 判断是否有该属性的 getting 方法
       if (metaClass.hasGetter(prop.getIndexedName())) {
+        //获取MeataObject对象
         MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+        // 如果 metaValue 为空，则基于 metaClass 判断是否有该属性的 getting 方法
         if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
           return metaClass.hasGetter(name);
         } else {
+          // 如果 metaValue 非空，则基于 metaValue 判断是否有 getting 方法。
+          // 递归判断子表达式 children ，判断是否有 getting 方法
           return metaValue.hasGetter(prop.getChildren());
         }
       } else {
         return false;
       }
+      //没有子属性
     } else {
+      // 判断是否有该属性的 getting 方法
       return metaClass.hasGetter(name);
     }
   }

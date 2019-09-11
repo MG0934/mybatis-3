@@ -24,20 +24,35 @@ import org.apache.ibatis.reflection.Reflector;
  * @author Clinton Begin
  */
 public class MethodInvoker implements Invoker {
-
+  /**
+   * 类型
+   */
   private final Class<?> type;
+  /**
+   * 指定方法
+   */
   private final Method method;
 
   public MethodInvoker(Method method) {
     this.method = method;
-
+    //参数大小为1时，一般是setting方法，设置type方法的参数为[0]
     if (method.getParameterTypes().length == 1) {
       type = method.getParameterTypes()[0];
     } else {
+      //否则，一般是getting方法，设置type为返回类型
       type = method.getReturnType();
     }
   }
 
+  /**
+   * 执行指定方法
+   *
+   * @param target 目标
+   * @param args 参数
+   * @return
+   * @throws IllegalAccessException
+   * @throws InvocationTargetException
+   */
   @Override
   public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException {
     try {

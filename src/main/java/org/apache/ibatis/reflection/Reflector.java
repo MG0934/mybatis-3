@@ -227,37 +227,52 @@ public class Reflector {
   }
 
   private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
+    //遍历每个属性，查找其最匹配的方法。因为子类可以覆写父类的方法，所以一个属性，可能对应多个 setting 方法
     for (String propName : conflictingSetters.keySet()) {
       List<Method> setters = conflictingSetters.get(propName);
       Class<?> getterType = getTypes.get(propName);
       boolean isGetterAmbiguous = getMethods.get(propName) instanceof AmbiguousMethodInvoker;
       boolean isSetterAmbiguous = false;
       Method match = null;
+      //遍历属性对应的setting方法
       for (Method setter : setters) {
+        //和getterType相同 直接使用
         if (!isGetterAmbiguous && setter.getParameterTypes()[0].equals(getterType)) {
           // should be the best match
           match = setter;
           break;
         }
         if (!isSetterAmbiguous) {
+          //选择一个更加匹配的
           match = pickBetterSetter(match, setter, propName);
           isSetterAmbiguous = match == null;
         }
       }
       if (match != null) {
+        //添加setMethods和setTypes中
         addSetMethod(propName, match);
       }
     }
   }
 
+  /**
+   * 挑选一个最匹配的setter
+   *
+   * @param setter1
+   * @param setter2
+   * @param property
+   * @return
+   */
   private Method pickBetterSetter(Method setter1, Method setter2, String property) {
     if (setter1 == null) {
       return setter2;
     }
     Class<?> paramType1 = setter1.getParameterTypes()[0];
     Class<?> paramType2 = setter2.getParameterTypes()[0];
+    //如果2是1的子类 则返回2
     if (paramType1.isAssignableFrom(paramType2)) {
       return setter2;
+      //如果1是2的子类 则返回1
     } else if (paramType2.isAssignableFrom(paramType1)) {
       return setter1;
     }
@@ -273,8 +288,10 @@ public class Reflector {
 
   private void addSetMethod(String name, Method method) {
     MethodInvoker invoker = new MethodInvoker(method);
+    //添加到setMethods中
     setMethods.put(name, invoker);
     Type[] paramTypes = TypeParameterResolver.resolveParamTypes(method, type);
+    //添加到setTypes中
     setTypes.put(name, typeToClass(paramTypes[0]));
   }
 
@@ -305,43 +322,66 @@ public class Reflector {
     return result;
   }
 
+  /**
+   * 是对getMethods和setMethods的补充，
+   * 因为某些字段可能不存在set 或者 get 方法
+   *
+   * @param clazz
+   */
   private void addFields(Class<?> clazz) {
+    //获取所有的field
     Field[] fields = clazz.getDeclaredFields();
     for (Field field : fields) {
+      //filed不存在在setMethods中
       if (!setMethods.containsKey(field.getName())) {
         // issue #379 - removed the check for final because JDK 1.5 allows
         // modification of final fields through reflection (JSR-133). (JGB)
         // pr #16 - final static can only be set by the classloader
         int modifiers = field.getModifiers();
+        //filed不是final修饰并且是static类型，设置进setField中
         if (!(Modifier.isFinal(modifiers) && Modifier.isStatic(modifiers))) {
           addSetField(field);
         }
       }
+      //getMethods中不包含name，则添加进getField中
       if (!getMethods.containsKey(field.getName())) {
         addGetField(field);
       }
     }
+    //递归，处理父类
     if (clazz.getSuperclass() != null) {
       addFields(clazz.getSuperclass());
     }
   }
 
   private void addSetField(Field field) {
+    //判断是合理的属性
     if (isValidPropertyName(field.getName())) {
+      //添加到setMethods中
       setMethods.put(field.getName(), new SetFieldInvoker(field));
       Type fieldType = TypeParameterResolver.resolveFieldType(field, type);
+      //添加到setTypes中
       setTypes.put(field.getName(), typeToClass(fieldType));
     }
   }
 
   private void addGetField(Field field) {
+    //判断是合理的属性
     if (isValidPropertyName(field.getName())) {
+      //添加到getMethods中
       getMethods.put(field.getName(), new GetFieldInvoker(field));
       Type fieldType = TypeParameterResolver.resolveFieldType(field, type);
+      //添加到getTypes中
       getTypes.put(field.getName(), typeToClass(fieldType));
     }
   }
 
+  /**
+   * 是否有效属性名称
+   *
+   * @param name
+   * @return
+   */
   private boolean isValidPropertyName(String name) {
     return !(name.startsWith("$") || "serialVersionUID".equals(name) || "class".equals(name));
   }
@@ -380,6 +420,12 @@ public class Reflector {
     return methods.toArray(new Method[0]);
   }
 
+  /**
+   * 获取签名方法 格式 returnType#方法名:参数名1,参数名2,参数名3 （返回值结构）
+   *
+   * @param uniqueMethods
+   * @param methods
+   */
   private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
     for (Method currentMethod : methods) {
       //忽略桥接方法
@@ -423,6 +469,8 @@ public class Reflector {
 
   /**
    * Checks whether can control member accessible.
+   *
+   * 安全校验，是否可以访问
    *
    * @return If can control member accessible, it return {@literal true}
    * @since 3.5.0
