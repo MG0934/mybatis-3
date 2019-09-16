@@ -198,10 +198,14 @@ public class BeanWrapper extends BaseWrapper {
   @Override
   public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
     MetaObject metaValue;
+    //获取setting方法参数类型
     Class<?> type = getSetterType(prop.getName());
     try {
+      //创建对象
       Object newObject = objectFactory.create(type);
+      //创建MetaObject对象
       metaValue = MetaObject.forObject(newObject, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory());
+      //设置当前对象的值
       set(prop, newObject);
     } catch (Exception e) {
       throw new ReflectionException("Cannot set value of property '" + name + "' because '" + name + "' is null and cannot be instantiated on instance of " + type.getName() + ". Cause:" + e.toString(), e);
@@ -238,16 +242,28 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  /**
+   * 是否是集合 默认false
+   *
+   * @return
+   */
   @Override
   public boolean isCollection() {
     return false;
   }
 
+  /**
+   * 添加不支持 默认抛出UnsupportedOperationException异常
+   * @param element
+   */
   @Override
   public void add(Object element) {
     throw new UnsupportedOperationException();
   }
-
+  /**
+   * 添加不支持 默认抛出UnsupportedOperationException异常
+   * @param list
+   */
   @Override
   public <E> void addAll(List<E> list) {
     throw new UnsupportedOperationException();

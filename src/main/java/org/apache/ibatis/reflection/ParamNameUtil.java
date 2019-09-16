@@ -23,16 +23,42 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 参数名工具类
+ *
+ */
 public class ParamNameUtil {
+  /**
+   * 获取普通方法的参数列表
+   *
+   * @param method
+   * @return
+   */
   public static List<String> getParamNames(Method method) {
     return getParameterNames(method);
   }
 
+  /**
+   * 获取构造方法的参数列表
+   *
+   * @param constructor
+   * @return
+   */
   public static List<String> getParamNames(Constructor<?> constructor) {
     return getParameterNames(constructor);
   }
 
   private static List<String> getParameterNames(Executable executable) {
+    /**
+     *       final List<String> names = new ArrayList<>();
+     *         // 获得 Parameter 数组
+     *         final Parameter[] params = executable.getParameters();
+     *         // 获得参数名，并添加到 names 中
+     *         for (Parameter param : params) {
+     *             names.add(param.getName());
+     *         }
+     *         return names;
+     */
     return Arrays.stream(executable.getParameters()).map(Parameter::getName).collect(Collectors.toList());
   }
 

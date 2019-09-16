@@ -88,11 +88,22 @@ public class CollectionWrapper implements ObjectWrapper {
     return true;
   }
 
+  /**
+   * 添加
+   *
+   * @param element
+   */
   @Override
   public void add(Object element) {
     object.add(element);
   }
 
+  /**
+   * 添加集合
+   *
+   * @param element
+   * @param <E>
+   */
   @Override
   public <E> void addAll(List<E> element) {
     object.addAll(element);

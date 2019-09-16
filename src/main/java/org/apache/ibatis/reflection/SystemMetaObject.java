@@ -21,21 +21,38 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 
 /**
+ * 系统级MetaObject对象
+ *
  * @author Clinton Begin
  */
 public final class SystemMetaObject {
-
+  /**
+   * ObjectFactory 的单例
+   */
   public static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
+  /**
+   * ObjectWrapperFactory 的单例
+   */
   public static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
+  /**
+   * NullObject 的 MataObject 单例
+   */
   public static final MetaObject NULL_META_OBJECT = MetaObject.forObject(NullObject.class, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, new DefaultReflectorFactory());
 
   private SystemMetaObject() {
     // Prevent Instantiation of Static Class
+    //私有构造
   }
 
   private static class NullObject {
   }
 
+  /**
+   * 创建MetaObject对象
+   *
+   * @param object 指定对象
+   * @return 对象
+   */
   public static MetaObject forObject(Object object) {
     return MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, new DefaultReflectorFactory());
   }
