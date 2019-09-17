@@ -25,6 +25,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
 /**
+ *非池话的数据源工厂实现
+ *
  * @author Clinton Begin
  */
 public class UnpooledDataSourceFactory implements DataSourceFactory {
@@ -35,20 +37,29 @@ public class UnpooledDataSourceFactory implements DataSourceFactory {
   protected DataSource dataSource;
 
   public UnpooledDataSourceFactory() {
+    //创建unpooledDatasource对象
     this.dataSource = new UnpooledDataSource();
   }
 
+  /**
+   * 设置属性，将properties中的属性 初始化到datasource中
+   * @param properties
+   */
   @Override
   public void setProperties(Properties properties) {
     Properties driverProperties = new Properties();
+    // 创建 dataSource 对应的 MetaObject 对象
     MetaObject metaDataSource = SystemMetaObject.forObject(dataSource);
     for (Object key : properties.keySet()) {
       String propertyName = (String) key;
+      // 初始化到 driverProperties 中
       if (propertyName.startsWith(DRIVER_PROPERTY_PREFIX)) {
         String value = properties.getProperty(propertyName);
         driverProperties.setProperty(propertyName.substring(DRIVER_PROPERTY_PREFIX_LENGTH), value);
+        // 初始化到 MetaObject 中
       } else if (metaDataSource.hasSetter(propertyName)) {
         String value = (String) properties.get(propertyName);
+        //转换值类型
         Object convertedValue = convertValue(metaDataSource, propertyName, value);
         metaDataSource.setValue(propertyName, convertedValue);
       } else {
@@ -56,6 +67,7 @@ public class UnpooledDataSourceFactory implements DataSourceFactory {
       }
     }
     if (driverProperties.size() > 0) {
+      // 设置 driverProperties 到 MetaObject 中
       metaDataSource.setValue("driverProperties", driverProperties);
     }
   }
@@ -65,8 +77,17 @@ public class UnpooledDataSourceFactory implements DataSourceFactory {
     return dataSource;
   }
 
+  /**
+   * 转换值类型
+   *
+   * @param metaDataSource 原对象
+   * @param propertyName 属性名
+   * @param value 属性值
+   * @return
+   */
   private Object convertValue(MetaObject metaDataSource, String propertyName, String value) {
     Object convertedValue = value;
+    // 获得该属性的 setting 方法的参数类型
     Class<?> targetType = metaDataSource.getSetterType(propertyName);
     if (targetType == Integer.class || targetType == int.class) {
       convertedValue = Integer.valueOf(value);

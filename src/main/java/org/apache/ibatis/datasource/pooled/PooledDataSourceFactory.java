@@ -21,7 +21,9 @@ import org.apache.ibatis.datasource.unpooled.UnpooledDataSourceFactory;
  * @author Clinton Begin
  */
 public class PooledDataSourceFactory extends UnpooledDataSourceFactory {
-
+  /**
+   * 创建pooldatasource工厂
+   */
   public PooledDataSourceFactory() {
     this.dataSource = new PooledDataSource();
   }

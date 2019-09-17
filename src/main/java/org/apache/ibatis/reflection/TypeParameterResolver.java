@@ -33,32 +33,47 @@ import java.util.Arrays;
 public class TypeParameterResolver {
 
   /**
+   * 解析属性类型
+   *
    * @return The field type as {@link Type}. If it has type parameters in the declaration,<br>
    *         they will be resolved to the actual runtime {@link Type}s.
    */
   public static Type resolveFieldType(Field field, Type srcType) {
+    //属性类型
     Type fieldType = field.getGenericType();
+    //定义的类
     Class<?> declaringClass = field.getDeclaringClass();
+    //解析类型
     return resolveType(fieldType, srcType, declaringClass);
   }
 
   /**
+   * 解析方法返回类型
+   *
    * @return The return type of the method as {@link Type}. If it has type parameters in the declaration,<br>
    *         they will be resolved to the actual runtime {@link Type}s.
    */
   public static Type resolveReturnType(Method method, Type srcType) {
+    //属性类型
     Type returnType = method.getGenericReturnType();
+    //定义的类
     Class<?> declaringClass = method.getDeclaringClass();
+    //解析类型
     return resolveType(returnType, srcType, declaringClass);
   }
 
   /**
+   * 解析参数类型
+   *
    * @return The parameter types of the method as an array of {@link Type}s. If they have type parameters in the declaration,<br>
    *         they will be resolved to the actual runtime {@link Type}s.
    */
   public static Type[] resolveParamTypes(Method method, Type srcType) {
+    //获取方法参数类型数组
     Type[] paramTypes = method.getGenericParameterTypes();
+    //定义的类
     Class<?> declaringClass = method.getDeclaringClass();
+    //解析类型们
     Type[] result = new Type[paramTypes.length];
     for (int i = 0; i < paramTypes.length; i++) {
       result[i] = resolveType(paramTypes[i], srcType, declaringClass);
@@ -66,6 +81,14 @@ public class TypeParameterResolver {
     return result;
   }
 
+  /**
+   * 解析类型
+   *
+   * @param type 类型
+   * @param srcType 来源类型
+   * @param declaringClass 定义的类
+   * @return 解析后的类型
+   */
   private static Type resolveType(Type type, Type srcType, Class<?> declaringClass) {
     if (type instanceof TypeVariable) {
       return resolveTypeVar((TypeVariable<?>) type, srcType, declaringClass);
@@ -78,7 +101,16 @@ public class TypeParameterResolver {
     }
   }
 
+  /**
+   * 解析泛型数组类型
+   *
+   * @param genericArrayType
+   * @param srcType
+   * @param declaringClass
+   * @return
+   */
   private static Type resolveGenericArrayType(GenericArrayType genericArrayType, Type srcType, Class<?> declaringClass) {
+    // 解析 componentType
     Type componentType = genericArrayType.getGenericComponentType();
     Type resolvedComponentType = null;
     if (componentType instanceof TypeVariable) {
@@ -88,6 +120,8 @@ public class TypeParameterResolver {
     } else if (componentType instanceof ParameterizedType) {
       resolvedComponentType = resolveParameterizedType((ParameterizedType) componentType, srcType, declaringClass);
     }
+
+    //创建GenericArrayTypeImpl
     if (resolvedComponentType instanceof Class) {
       return Array.newInstance((Class<?>) resolvedComponentType, 0).getClass();
     } else {
@@ -95,8 +129,17 @@ public class TypeParameterResolver {
     }
   }
 
+  /**
+   * 解析paramterizedType类型
+   *
+   * @param parameterizedType ParameterizedType 类型
+   * @param srcType  来源类型
+   * @param declaringClass    定义的类
+   * @return
+   */
   private static ParameterizedType resolveParameterizedType(ParameterizedType parameterizedType, Type srcType, Class<?> declaringClass) {
     Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+   //解析<>中的类型
     Type[] typeArgs = parameterizedType.getActualTypeArguments();
     Type[] args = new Type[typeArgs.length];
     for (int i = 0; i < typeArgs.length; i++) {
@@ -110,12 +153,24 @@ public class TypeParameterResolver {
         args[i] = typeArgs[i];
       }
     }
+    //创建ParameterizedTypeImpl对象
     return new ParameterizedTypeImpl(rawType, null, args);
   }
 
+  /**
+   * 解析WildcardType 通配符类型
+   *
+   * @param wildcardType
+   * @param srcType
+   * @param declaringClass
+   * @return
+   */
   private static Type resolveWildcardType(WildcardType wildcardType, Type srcType, Class<?> declaringClass) {
+    //解析泛型表达式下限super
     Type[] lowerBounds = resolveWildcardTypeBounds(wildcardType.getLowerBounds(), srcType, declaringClass);
+    //解析泛型表达式上线extends
     Type[] upperBounds = resolveWildcardTypeBounds(wildcardType.getUpperBounds(), srcType, declaringClass);
+    //创建WildcardTypeImpl对象
     return new WildcardTypeImpl(lowerBounds, upperBounds);
   }
 
@@ -135,6 +190,14 @@ public class TypeParameterResolver {
     return result;
   }
 
+  /**
+   * TODO 暂时有点看不懂
+   *
+   * @param typeVar
+   * @param srcType
+   * @param declaringClass
+   * @return
+   */
   private static Type resolveTypeVar(TypeVariable<?> typeVar, Type srcType, Class<?> declaringClass) {
     Type result;
     Class<?> clazz;
@@ -228,9 +291,26 @@ public class TypeParameterResolver {
     private Type[] actualTypeArguments;
 
     public ParameterizedTypeImpl(Class<?> rawType, Type ownerType, Type[] actualTypeArguments) {
+
+
       super();
+
+      /**
+       * 以 List<T> 举例子
+       * <>前面的实际类型
+       *
+       * 例如List
+       */
       this.rawType = rawType;
+      /**
+       * 如果这个属性是某个属性所有，则返回这个所有者的类型，否则返回null
+       */
       this.ownerType = ownerType;
+      /**
+       * <>中的实际类型
+       *
+       * 例如 T
+       */
       this.actualTypeArguments = actualTypeArguments;
     }
 
@@ -256,8 +336,15 @@ public class TypeParameterResolver {
   }
 
   static class WildcardTypeImpl implements WildcardType {
+
+    /**
+     * 泛型表达式下界
+     */
     private Type[] lowerBounds;
 
+    /**
+     * 泛型表达式上界
+     */
     private Type[] upperBounds;
 
     WildcardTypeImpl(Type[] lowerBounds, Type[] upperBounds) {
@@ -277,7 +364,16 @@ public class TypeParameterResolver {
     }
   }
 
+  /**
+   * GenericArrayType 实现类
+   *
+   *  泛型数组类型，用来描述 ParameterizedType、TypeVariable 类型的数组；即 List<T>[]、T[] 等；
+   */
   static class GenericArrayTypeImpl implements GenericArrayType {
+
+    /**
+     * 数组元素类型
+     */
     private Type genericComponentType;
 
     GenericArrayTypeImpl(Type genericComponentType) {

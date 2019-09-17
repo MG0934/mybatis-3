@@ -18,6 +18,8 @@ package org.apache.ibatis.reflection;
 import org.apache.ibatis.io.Resources;
 
 /**
+ * 校验依赖版本的类
+ *
  * To check the existence of version dependent classes.
  */
 public class Jdk {
