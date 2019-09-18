@@ -21,10 +21,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * 枚举类型的处理器 将枚举类型转换成String类型
+ *
  * @author Clinton Begin
  */
 public class EnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
-
+  /**
+   * 枚举类
+   */
   private final Class<E> type;
 
   public EnumTypeHandler(Class<E> type) {
@@ -36,6 +40,7 @@ public class EnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
+    //将枚举类型转换成String 类型
     if (jdbcType == null) {
       ps.setString(i, parameter.name());
     } else {
@@ -45,19 +50,25 @@ public class EnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
   @Override
   public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    //获取String的值
     String s = rs.getString(columnName);
+    //将String的值 转换成Enum类型
     return s == null ? null : Enum.valueOf(type, s);
   }
 
   @Override
   public E getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+    //获取String的值
     String s = rs.getString(columnIndex);
+    //将String的值 转换成Enum类型
     return s == null ? null : Enum.valueOf(type, s);
   }
 
   @Override
   public E getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+    //获取String的值
     String s = cs.getString(columnIndex);
+    //将String的值 转换成Enum类型
     return s == null ? null : Enum.valueOf(type, s);
   }
 }

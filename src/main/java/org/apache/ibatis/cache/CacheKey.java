@@ -23,12 +23,18 @@ import java.util.StringJoiner;
 import org.apache.ibatis.reflection.ArrayUtil;
 
 /**
+ *
+ * 缓存key的计算类
+ *
  * @author Clinton Begin
  */
 public class CacheKey implements Cloneable, Serializable {
 
   private static final long serialVersionUID = 1146682552656046210L;
 
+  /**
+   * 单例 - 空缓存键
+   */
   public static final CacheKey NULL_CACHE_KEY = new CacheKey(){
     @Override
     public void update(Object object) {
@@ -39,15 +45,38 @@ public class CacheKey implements Cloneable, Serializable {
       throw new CacheException("Not allowed to update a null cache key instance.");
     }
   };
-
+  /**
+   * 默认 {@link #multiplier} 的值
+   */
   private static final int DEFAULT_MULTIPLYER = 37;
+  /**
+   * 默认 {@link #hashcode} 的值
+   */
   private static final int DEFAULT_HASHCODE = 17;
 
+  /**
+   * hashcode 求值的系数
+   */
   private final int multiplier;
+  /**
+   * 缓存键 hashcode
+   */
   private int hashcode;
+  /**
+   * 校验和
+   */
   private long checksum;
+  /**
+   *
+   *  {@link #update(Object)} 的数量
+   *
+   */
   private int count;
   // 8/21/2017 - Sonarlint flags this as needing to be marked transient.  While true if content is not serializable, this is not always true and thus should not be marked transient.
+
+  /**
+   * 计算 {@link #hashcode} 的对象的集合
+   */
   private List<Object> updateList;
 
   public CacheKey() {
@@ -59,6 +88,7 @@ public class CacheKey implements Cloneable, Serializable {
 
   public CacheKey(Object[] objects) {
     this();
+    //基于objects 更新相关属性
     updateAll(objects);
   }
 
@@ -67,14 +97,16 @@ public class CacheKey implements Cloneable, Serializable {
   }
 
   public void update(Object object) {
+    //方法参数object的hashcode
     int baseHashCode = object == null ? 1 : ArrayUtil.hashCode(object);
 
     count++;
+    // checksum 为 baseHashCode 的求和
     checksum += baseHashCode;
     baseHashCode *= count;
-
+    // 计算新的 hashcode 值
     hashcode = multiplier * hashcode + baseHashCode;
-
+    // 添加 object 到 updateList 中
     updateList.add(object);
   }
 
@@ -105,6 +137,7 @@ public class CacheKey implements Cloneable, Serializable {
       return false;
     }
 
+    //比较UpdateList数组
     for (int i = 0; i < updateList.size(); i++) {
       Object thisObject = updateList.get(i);
       Object thatObject = cacheKey.updateList.get(i);
@@ -131,7 +164,9 @@ public class CacheKey implements Cloneable, Serializable {
 
   @Override
   public CacheKey clone() throws CloneNotSupportedException {
+    //克隆CacheKey对象
     CacheKey clonedCacheKey = (CacheKey) super.clone();
+    //创建updateList数组，避免原数组修改
     clonedCacheKey.updateList = new ArrayList<>(updateList);
     return clonedCacheKey;
   }

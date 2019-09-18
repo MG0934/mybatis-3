@@ -33,11 +33,15 @@ import org.apache.ibatis.transaction.TransactionFactory;
  */
 public class ManagedTransactionFactory implements TransactionFactory {
 
+  /**
+   * 是否关闭连接
+   */
   private boolean closeConnection = true;
 
   @Override
   public void setProperties(Properties props) {
     if (props != null) {
+      // 获得是否关闭连接属性
       String closeConnectionProperty = props.getProperty("closeConnection");
       if (closeConnectionProperty != null) {
         closeConnection = Boolean.valueOf(closeConnectionProperty);
@@ -47,6 +51,7 @@ public class ManagedTransactionFactory implements TransactionFactory {
 
   @Override
   public Transaction newTransaction(Connection conn) {
+    //创建managedTransaction对象
     return new ManagedTransaction(conn, closeConnection);
   }
 
@@ -55,6 +60,7 @@ public class ManagedTransactionFactory implements TransactionFactory {
     // Silently ignores autocommit and isolation level, as managed transactions are entirely
     // controlled by an external manager.  It's silently ignored so that
     // code remains portable between managed and unmanaged configurations.
+    //创建managedTransaction对象
     return new ManagedTransaction(ds, level, closeConnection);
   }
 }

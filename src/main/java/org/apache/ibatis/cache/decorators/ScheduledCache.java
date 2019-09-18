@@ -18,16 +18,27 @@ package org.apache.ibatis.cache.decorators;
 import org.apache.ibatis.cache.Cache;
 
 /**
+ * 定时清空整个容器的装饰类
+ *
  * @author Clinton Begin
  */
 public class ScheduledCache implements Cache {
-
+  /**
+   * 被装饰的cache对象
+   */
   private final Cache delegate;
+  /**
+   * 清空间隔，单位：毫秒
+   */
   protected long clearInterval;
+  /**
+   * 最后清空时间 单位：毫秒
+   */
   protected long lastClear;
 
   public ScheduledCache(Cache delegate) {
     this.delegate = delegate;
+    //默认 1小时
     this.clearInterval = 60 * 60 * 1000; // 1 hour
     this.lastClear = System.currentTimeMillis();
   }
@@ -43,30 +54,36 @@ public class ScheduledCache implements Cache {
 
   @Override
   public int getSize() {
+    //判断是否要全部清空
     clearWhenStale();
     return delegate.getSize();
   }
 
   @Override
   public void putObject(Object key, Object object) {
+    //判读是否要全部清空
     clearWhenStale();
     delegate.putObject(key, object);
   }
 
   @Override
   public Object getObject(Object key) {
+    //判读是否要全部清空
     return clearWhenStale() ? null : delegate.getObject(key);
   }
 
   @Override
   public Object removeObject(Object key) {
+    //判读是否要全部清空
     clearWhenStale();
     return delegate.removeObject(key);
   }
 
   @Override
   public void clear() {
+    //记录清空时间
     lastClear = System.currentTimeMillis();
+    //全部清空
     delegate.clear();
   }
 
@@ -80,8 +97,14 @@ public class ScheduledCache implements Cache {
     return delegate.equals(obj);
   }
 
+  /**
+   * 判断是否要全部清空
+   *
+   * @return
+   */
   private boolean clearWhenStale() {
     if (System.currentTimeMillis() - lastClear > clearInterval) {
+      //清空
       clear();
       return true;
     }

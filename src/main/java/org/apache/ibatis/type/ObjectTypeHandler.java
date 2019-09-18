@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * object 类型转换器
+ *
  * @author Clinton Begin
  */
 public class ObjectTypeHandler extends BaseTypeHandler<Object> {

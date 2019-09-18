@@ -21,19 +21,57 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * 类型转换处理器
+ *
  * @author Clinton Begin
  */
 public interface TypeHandler<T> {
 
+  /**
+   * 设置 PreparedStatement 的指定参数
+   *
+   * Java Type => JDBC Type
+   *
+   * @param ps PreparedStatement 对象
+   * @param i 参数占位符的位置
+   * @param parameter 参数
+   * @param jdbcType JDBC 类型
+   * @throws SQLException SQL 异常
+   */
   void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException;
 
   /**
-   * @param columnName Colunm name, when configuration <code>useColumnLabel</code> is <code>false</code>
+   * 获取 ResultSet 的指定字段的值
+   *
+   * JDBC Type => Java Type
+   *
+   * @param rs ResultSet 对象
+   * @param columnName 字段名
+   * @return 值
+   * @throws SQLException SQL 异常
    */
   T getResult(ResultSet rs, String columnName) throws SQLException;
-
+  /**
+   * 获取 ResultSet 的指定字段的值
+   *
+   * JDBC Type => Java Type
+   *
+   * @param rs ResultSet 对象
+   * @param columnIndex 字段位置
+   * @return 值
+   * @throws SQLException SQL 异常
+   */
   T getResult(ResultSet rs, int columnIndex) throws SQLException;
-
+  /**
+   * 获得 CallableStatement 的指定字段的值
+   *
+   * JDBC Type => Java Type
+   *
+   * @param cs ResultSet 对象
+   * @param columnIndex 字段位置
+   * @return 值
+   * @throws SQLException SQL 异常
+   */
   T getResult(CallableStatement cs, int columnIndex) throws SQLException;
 
 }

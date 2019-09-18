@@ -48,18 +48,49 @@ import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.io.Resources;
 
 /**
+ * TypeHandler处理器管理器
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
 public final class TypeHandlerRegistry {
 
-  private final Map<JdbcType, TypeHandler<?>>  jdbcTypeHandlerMap = new EnumMap<>(JdbcType.class);
-  private final Map<Type, Map<JdbcType, TypeHandler<?>>> typeHandlerMap = new ConcurrentHashMap<>();
-  private final TypeHandler<Object> unknownTypeHandler = new UnknownTypeHandler(this);
-  private final Map<Class<?>, TypeHandler<?>> allTypeHandlersMap = new HashMap<>();
 
+  private final Map<JdbcType, TypeHandler<?>>  jdbcTypeHandlerMap = new EnumMap<>(JdbcType.class);
+  /**
+   * {@link TypeHandler} 的映射 ，TypeHandler 的映射。
+   *
+   * 一个 Java Type 可以对应多个 JDBC Type ，也就是多个 TypeHandler ，所以 Map 的第一层的值是 Map<JdbcType, TypeHandler<?> 。
+   * 在 <1> 处，我们可以看到，Date 对应了多个 JDBC 的 TypeHandler 的注册。
+   * 当一个 Java Type 不存在对应的 JDBC Type 时，就使用 NULL_TYPE_HANDLER_MAP 静态属性，添加到 TYPE_HANDLER_MAP 中进行占位。
+   *
+   * KEY1：JDBC Type
+   * KEY2：Java Type
+   * VALUE：{@link TypeHandler} 对象
+   */
+  private final Map<Type, Map<JdbcType, TypeHandler<?>>> typeHandlerMap = new ConcurrentHashMap<>();
+
+  /**
+   * {@link UnknownTypeHandler} 对象
+   */
+  private final TypeHandler<Object> unknownTypeHandler = new UnknownTypeHandler(this);
+  /**
+   * 所有 TypeHandler 的“集合”
+   *
+   * KEY：{@link TypeHandler#getClass()}
+   * VALUE：{@link TypeHandler} 对象
+   */
+  private final Map<Class<?>, TypeHandler<?>> allTypeHandlersMap = new HashMap<>();
+  /**
+   * 空 TypeHandler 集合的标识，即使 {@link #NULL_TYPE_HANDLER_MAP} 中，某个 KEY1 对应的 Map<JdbcType, TypeHandler<?>> 为空。
+   *
+   * @see #getJdbcHandlerMap(Type)
+   */
   private static final Map<JdbcType, TypeHandler<?>> NULL_TYPE_HANDLER_MAP = Collections.emptyMap();
 
+  /**
+   * 默认的枚举类型的 TypeHandler 对象
+   */
   private Class<? extends TypeHandler> defaultEnumTypeHandler = EnumTypeHandler.class;
 
   public TypeHandlerRegistry() {
@@ -420,11 +451,21 @@ public final class TypeHandlerRegistry {
 
   // Construct a handler (used also from Builders)
 
+  /**
+   * 创建TypeHandler
+   *
+   * @param javaTypeClass
+   * @param typeHandlerClass
+   * @param <T>
+   * @return
+   */
   @SuppressWarnings("unchecked")
   public <T> TypeHandler<T> getInstance(Class<?> javaTypeClass, Class<?> typeHandlerClass) {
     if (javaTypeClass != null) {
       try {
+        //获取Class类型的构造器
         Constructor<?> c = typeHandlerClass.getConstructor(Class.class);
+        //实例化 符合这个条件的，例如 EnumTypeHandler
         return (TypeHandler<T>) c.newInstance(javaTypeClass);
       } catch (NoSuchMethodException ignored) {
         // ignored
@@ -432,6 +473,7 @@ public final class TypeHandlerRegistry {
         throw new TypeException("Failed invoking constructor for handler " + typeHandlerClass, e);
       }
     }
+    //如果javatype为空的话 则获取默认构造进行实例化处理
     try {
       Constructor<?> c = typeHandlerClass.getConstructor();
       return (TypeHandler<T>) c.newInstance();
