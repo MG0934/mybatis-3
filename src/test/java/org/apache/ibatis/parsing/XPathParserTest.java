@@ -151,6 +151,11 @@ class XPathParserTest {
     testEvalMethod(parser);
   }
 
+  /**
+   * 根据resource 获取document对象
+   * @param resource
+   * @return
+   */
   private Document getDocument(String resource) {
     try {
       InputSource inputSource = new InputSource(Resources.getResourceAsReader(resource));
@@ -167,6 +172,13 @@ class XPathParserTest {
     }
   }
 
+  /**
+   * 根据resource路径 获取xml文件内容
+   *
+   * @param resource
+   * @return
+   * @throws IOException
+   */
   private String getXmlString(String resource) throws IOException {
     try (BufferedReader bufferedReader = new BufferedReader(Resources.getResourceAsReader(resource))) {
       StringBuilder sb = new StringBuilder();

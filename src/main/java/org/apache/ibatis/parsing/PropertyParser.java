@@ -63,7 +63,7 @@ public class PropertyParser {
 
   private static class VariableTokenHandler implements TokenHandler {
     /**
-     * 变量properties独享
+     * 变量properties对象
      */
     private final Properties variables;
     /**

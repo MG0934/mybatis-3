@@ -121,6 +121,8 @@ public class ClassLoaderWrapper {
   /**
    * Try to get a resource from a group of classloaders
    *
+   * 获取Resource 的 stream
+   *
    * @param resource    - the resource to get
    * @param classLoader - the classloaders to examine
    * @return the resource or null

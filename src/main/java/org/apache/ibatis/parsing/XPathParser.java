@@ -41,6 +41,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
+ * xpath解析器
+ *
+ * 用于解析 MyBatis mybatis-config.xml 和 **Mapper.xml 等 XML 配置文件
+ * 将他们转换成document对象存储使用
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -309,11 +314,19 @@ public class XPathParser {
     }
   }
 
+  /**
+   * 通用构造器 设置
+   *
+   * @param validation 是否校验
+   * @param variables   properties对象
+   * @param entityResolver entityResolver对象
+   */
   private void commonConstructor(boolean validation, Properties variables, EntityResolver entityResolver) {
     this.validation = validation;
     this.entityResolver = entityResolver;
     this.variables = variables;
     //构造xpathfactory对象
+    //获取到的是默认的构造对象 xpathFactoryImpl
     XPathFactory factory = XPathFactory.newInstance();
     this.xpath = factory.newXPath();
   }

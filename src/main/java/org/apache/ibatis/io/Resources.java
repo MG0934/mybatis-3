@@ -109,6 +109,8 @@ public class Resources {
   /**
    * Returns a resource on the classpath as a Stream object
    *
+   * 记载资源对象 inputstream
+   *
    * @param loader   The classloader used to fetch the resource
    * @param resource The resource to find
    * @return The resource
