@@ -28,6 +28,8 @@ import java.util.Properties;
 /**
  * A class to simplify access to resources through the classloader.
  *
+ * 资源工具类
+ *
  * @author Clinton Begin
  */
 public class Resources {
@@ -35,6 +37,8 @@ public class Resources {
   private static ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper();
 
   /**
+   * 字符集
+   *
    * Charset to use when calling getResourceAsReader.
    * null means use the system default.
    */
@@ -54,6 +58,8 @@ public class Resources {
 
   /**
    * Sets the default classloader
+   *
+   * 修改默认的classLoader
    *
    * @param defaultClassLoader - the new default ClassLoader
    */
@@ -125,6 +131,7 @@ public class Resources {
    */
   public static Properties getResourceAsProperties(String resource) throws IOException {
     Properties props = new Properties();
+    //读取
     try (InputStream in = getResourceAsStream(resource)) {
       props.load(in);
     }
@@ -141,6 +148,7 @@ public class Resources {
    */
   public static Properties getResourceAsProperties(ClassLoader loader, String resource) throws IOException {
     Properties props = new Properties();
+    //读取
     try (InputStream in = getResourceAsStream(loader, resource)) {
       props.load(in);
     }
@@ -214,6 +222,7 @@ public class Resources {
    */
   public static InputStream getUrlAsStream(String urlString) throws IOException {
     URL url = new URL(urlString);
+    //打开UrlConnection
     URLConnection conn = url.openConnection();
     return conn.getInputStream();
   }

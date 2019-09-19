@@ -31,15 +31,19 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target(ElementType.TYPE)//类型
 public @interface CacheNamespaceRef {
 
   /**
+   * 见 {@link MapperAnnotationBuilder#parseCacheRef()} 方法
+   *
    * A namespace type to reference a cache (the namespace name become a FQCN of specified type).
    */
   Class<?> value() default void.class;
 
   /**
+   * 指向的命名空间
+   *
    * A namespace name to reference a cache.
    * @since 3.4.2
    */

@@ -36,13 +36,20 @@ public abstract class VFS {
   private static final Log log = LogFactory.getLog(VFS.class);
 
   /** The built-in implementations. */
+  /**
+   * 内置VFS实现类的数组
+   */
   public static final Class<?>[] IMPLEMENTATIONS = { JBoss6VFS.class, DefaultVFS.class };
 
   /** The list to which implementations are added by {@link #addImplClass(Class)}. */
+  /**
+   * 自定义VFS的实现类数组
+   */
   public static final List<Class<? extends VFS>> USER_IMPLEMENTATIONS = new ArrayList<>();
 
   /** Singleton instance holder. */
   private static class VFSHolder {
+
     static final VFS INSTANCE = createVFS();
 
     @SuppressWarnings("unchecked")
@@ -53,6 +60,7 @@ public abstract class VFS {
       impls.addAll(Arrays.asList((Class<? extends VFS>[]) IMPLEMENTATIONS));
 
       // Try each implementation class until a valid one is found
+      // 创建 VFS 对象，选择最后一个符合的
       VFS vfs = null;
       for (int i = 0; vfs == null || !vfs.isValid(); i++) {
         Class<? extends VFS> impl = impls.get(i);
@@ -172,11 +180,17 @@ public abstract class VFS {
   }
 
   /** Return true if the {@link VFS} implementation is valid for the current environment. */
+  /**
+   * 判断是否为合法的VFS
+   * @return
+   */
   public abstract boolean isValid();
 
   /**
    * Recursively list the full resource path of all the resources that are children of the
    * resource identified by a URL.
+   *
+   * 获得指定路径下的所有资源
    *
    * @param url The URL that identifies the resource to list.
    * @param forPath The path to the resource that is identified by the URL. Generally, this is the

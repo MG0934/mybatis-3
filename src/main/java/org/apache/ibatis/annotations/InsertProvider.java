@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target(ElementType.METHOD)//方法
 public @interface InsertProvider {
 
   /**
@@ -44,6 +44,8 @@ public @interface InsertProvider {
    * This attribute is alias of {@link #value()}.
    * </p>
    *
+   * 提供的类
+   *
    * @return a type that implements an SQL provider method
    * @see #value()
    */
@@ -51,6 +53,8 @@ public @interface InsertProvider {
 
   /**
    * Specify a method for providing an SQL.
+   *
+   * 提供的方法
    *
    * <p>
    * Since 3.5.1, this attribute can omit.

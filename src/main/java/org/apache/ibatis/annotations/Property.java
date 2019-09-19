@@ -33,11 +33,15 @@ import java.lang.annotation.Target;
 public @interface Property {
 
   /**
+   * 属性名
+   *
    * A target property name.
    */
   String name();
 
   /**
+   * 属性值
+   *
    * A property value or placeholder.
    */
   String value();

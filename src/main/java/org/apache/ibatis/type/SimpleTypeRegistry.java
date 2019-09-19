@@ -22,12 +22,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 简单类型注册
+ *
  * @author Clinton Begin
  */
 public class SimpleTypeRegistry {
-
+  /**
+   * 简单类型的集合
+   */
   private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>();
 
+  /**
+   * 初始化常用类到SIMPLE_TYPE_SET 中
+   */
   static {
     SIMPLE_TYPE_SET.add(String.class);
     SIMPLE_TYPE_SET.add(Byte.class);
