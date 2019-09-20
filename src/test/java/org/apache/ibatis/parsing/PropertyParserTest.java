@@ -22,6 +22,9 @@ import java.util.Properties;
 
 class PropertyParserTest {
 
+  /**
+   * 替换参数值
+   */
   @Test
   void replaceToVariableValue() {
     Properties props = new Properties();
@@ -30,6 +33,7 @@ class PropertyParserTest {
     props.setProperty("tableName", "members");
     props.setProperty("orderColumn", "member_id");
     props.setProperty("a:b", "c");
+
     Assertions.assertThat(PropertyParser.parse("${key}", props)).isEqualTo("value");
     Assertions.assertThat(PropertyParser.parse("${key:aaaa}", props)).isEqualTo("value");
     Assertions.assertThat(PropertyParser.parse("SELECT * FROM ${tableName:users} ORDER BY ${orderColumn:id}", props)).isEqualTo("SELECT * FROM members ORDER BY member_id");
@@ -42,6 +46,9 @@ class PropertyParserTest {
 
   }
 
+  /**
+   * 不替换处理 如果找不到值 则按原格式返回
+   */
   @Test
   void notReplace() {
     Properties props = new Properties();
@@ -57,6 +64,9 @@ class PropertyParserTest {
 
   }
 
+  /**
+   * 使用默认值 也就是使用 ： 后面的值
+   */
   @Test
   void applyDefaultValue() {
     Properties props = new Properties();
@@ -68,6 +78,9 @@ class PropertyParserTest {
     Assertions.assertThat(PropertyParser.parse("${key::}", props)).isEqualTo(":");
   }
 
+  /**
+   * 使用自定义切割符
+   */
   @Test
   void applyCustomSeparator() {
     Properties props = new Properties();

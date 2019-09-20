@@ -30,9 +30,19 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.*;
 
+/**
+ * 通过资源文件 获取xpathoarser对象 不过就是通过的资源文件格式不一样 底层都会转换成 xml 的input对象
+ */
 class XPathParserTest {
+  /**
+   * 定义资源文件位置
+   */
   private String resource = "resources/nodelet_test.xml";
 
+  /**
+   * 通过资源文件 获取parser
+   * @throws Exception
+   */
   //InputStream Source
   @Test
   void constructorWithInputStreamValidationVariablesEntityResolver() throws Exception {

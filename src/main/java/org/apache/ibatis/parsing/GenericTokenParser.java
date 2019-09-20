@@ -44,11 +44,12 @@ public class GenericTokenParser {
       return "";
     }
     // search open token
-    //寻找开始的openToken的位置
+    //寻找开始的openToken的位置 ${ 这个的位置
     int start = text.indexOf(openToken);
     if (start == -1) {//找不到,直接返回
       return text;
     }
+    //将text转换成char数组
     char[] src = text.toCharArray();
     int offset = 0;//起始查找位置
     final StringBuilder builder = new StringBuilder();

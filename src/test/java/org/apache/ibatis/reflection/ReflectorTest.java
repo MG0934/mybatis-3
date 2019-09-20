@@ -30,6 +30,9 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 class ReflectorTest {
 
+  /**
+   * 测试获取 设置参数的类型
+   */
   @Test
   void testGetSetterType() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -37,6 +40,9 @@ class ReflectorTest {
     Assertions.assertEquals(Long.class, reflector.getSetterType("id"));
   }
 
+  /**
+   * 获取返回值类型
+   */
   @Test
   void testGetGetterType() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -44,6 +50,9 @@ class ReflectorTest {
     Assertions.assertEquals(Long.class, reflector.getGetterType("id"));
   }
 
+  /**
+   * 应该没有get的类
+   */
   @Test
   void shouldNotGetClass() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();

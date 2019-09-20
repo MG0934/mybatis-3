@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class DefaultReflectorFactory implements ReflectorFactory {
   /**
-   * 是否缓存，默认缓存
+   * 是否缓存，默认开启缓存
    */
   private boolean classCacheEnabled = true;
   /**

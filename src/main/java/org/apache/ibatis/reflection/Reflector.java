@@ -100,7 +100,7 @@ public class Reflector {
   public Reflector(Class<?> clazz) {
     //设置对应的类
     type = clazz;
-    //初始化defaultConstructor
+    //初始化defaultConstructor 默认构造
     addDefaultConstructor(clazz);
     //初始化getMethods和getTypes 通过遍历getting方法
     addGetMethods(clazz);
@@ -128,7 +128,7 @@ public class Reflector {
   }
 
   private void addGetMethods(Class<?> clazz) {
-    //属性与getting方法的映射
+    //属性与getting方法的映射 (解决冲突的集合)
     Map<String, List<Method>> conflictingGetters = new HashMap<>();
     //获得所有方法
     Method[] methods = getClassMethods(clazz);

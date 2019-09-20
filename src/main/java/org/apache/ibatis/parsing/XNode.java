@@ -27,6 +27,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
+ * node节点包装类
+ *
  * @author Clinton Begin
  */
 public class XNode {
@@ -355,6 +357,7 @@ public class XNode {
     if (attributeNodes != null) {
       for (int i = 0; i < attributeNodes.getLength(); i++) {
         Node attribute = attributeNodes.item(i);
+        //替换动态属性
         String value = PropertyParser.parse(attribute.getNodeValue(), variables);
         attributes.put(attribute.getNodeName(), value);
       }

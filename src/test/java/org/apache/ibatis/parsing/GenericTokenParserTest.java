@@ -40,6 +40,9 @@ class GenericTokenParserTest {
     }
   }
 
+  /**
+   * 替换符号中的内容
+   */
   @Test
   void shouldDemonstrateGenericTokenReplacement() {
     GenericTokenParser parser = new GenericTokenParser("${", "}", new VariableTokenHandler(new HashMap<String, String>() {

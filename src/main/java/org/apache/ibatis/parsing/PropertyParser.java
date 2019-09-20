@@ -53,9 +53,9 @@ public class PropertyParser {
   }
 
   public static String parse(String string, Properties variables) {
-    //创建VariableTokenHandler独享
+    //创建 变量符号处理器 VariableTokenHandler对象
     VariableTokenHandler handler = new VariableTokenHandler(variables);
-    //创建 GenericTokenParser 对象
+    //创建 通用符号转换 GenericTokenParser 对象
     GenericTokenParser parser = new GenericTokenParser("${", "}", handler);
     //执行解析
     return parser.parse(string);
@@ -77,7 +77,13 @@ public class PropertyParser {
 
     private VariableTokenHandler(Properties variables) {
       this.variables = variables;
+      /**
+       * 设置是否开启默认值
+       */
       this.enableDefaultValue = Boolean.parseBoolean(getPropertyValue(KEY_ENABLE_DEFAULT_VALUE, ENABLE_DEFAULT_VALUE));
+      /**
+       * 设置默认分隔符
+       */
       this.defaultValueSeparator = getPropertyValue(KEY_DEFAULT_VALUE_SEPARATOR, DEFAULT_VALUE_SEPARATOR);
     }
 
