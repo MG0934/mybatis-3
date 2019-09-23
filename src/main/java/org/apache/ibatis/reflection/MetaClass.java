@@ -47,6 +47,13 @@ public class MetaClass {
     this.reflector = reflectorFactory.findForClass(type);
   }
 
+  /**
+   * 通过forClass 进行实例化
+   *
+   * @param type
+   * @param reflectorFactory
+   * @return
+   */
   public static MetaClass forClass(Class<?> type, ReflectorFactory reflectorFactory) {
     return new MetaClass(type, reflectorFactory);
   }
@@ -134,7 +141,7 @@ public class MetaClass {
    * @return
    */
   public Class<?> getGetterType(String name) {
-    //获取分词器
+    //获取分词器,进行分词
     PropertyTokenizer prop = new PropertyTokenizer(name);
     //如果有子属性
     if (prop.hasNext()) {

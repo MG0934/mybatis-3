@@ -28,6 +28,9 @@ import org.junit.jupiter.api.Test;
 
 class MetaClassTest {
 
+  /**
+   * 应该测试通用方法数据类型
+   */
   @Test
   void shouldTestDataTypeOfGenericMethod() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -36,6 +39,9 @@ class MetaClassTest {
     assertEquals(Long.class, meta.getSetterType("id"));
   }
 
+  /**
+   * 应该引发异常的get类型
+   */
   @Test
   void shouldThrowReflectionExceptionGetGetterType() {
     try {
@@ -48,6 +54,9 @@ class MetaClassTest {
     }
   }
 
+  /**
+   * 应该校验get存在
+   */
   @Test
   void shouldCheckGetterExistance() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -70,6 +79,9 @@ class MetaClassTest {
     assertFalse(meta.hasGetter("[0]"));
   }
 
+  /**
+   * 应该校验set存在
+   */
   @Test
   void shouldCheckSetterExistance() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();

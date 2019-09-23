@@ -546,6 +546,7 @@ public class Reflector {
    */
   public Class<?> getGetterType(String propertyName) {
     Class<?> clazz = getTypes.get(propertyName);
+    //如果没有找到type 则抛出异常
     if (clazz == null) {
       throw new ReflectionException("There is no getter for property named '" + propertyName + "' in '" + type + "'");
     }

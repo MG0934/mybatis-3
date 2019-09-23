@@ -84,6 +84,10 @@ class ReflectorTest {
   static class Section extends AbstractEntity implements Entity<Long> {
   }
 
+
+  /**
+   * 能解析set方法的参数
+   */
   @Test
   void shouldResolveSetterParam() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -297,6 +301,10 @@ class ReflectorTest {
             + "'. This breaks the JavaBeans specification and can cause unpredictable results.");
   }
 
+  /**
+   * 应该允许两个布尔类型
+   * @throws Exception
+   */
   @Test
   void shouldAllowTwoBooleanGetters() throws Exception {
     @SuppressWarnings("unused")
@@ -311,6 +319,11 @@ class ReflectorTest {
     assertTrue((Boolean)reflector.getGetInvoker("bool").invoke(new Bean(), new Byte[0]));
   }
 
+  /**
+   *如果get方法不明确，应该忽略最佳匹配set
+   *
+   * @throws Exception
+   */
   @Test
   void shouldIgnoreBestMatchSetterIfGetterIsAmbiguous() throws Exception {
     @SuppressWarnings("unused")
