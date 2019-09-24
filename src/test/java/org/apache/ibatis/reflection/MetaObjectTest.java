@@ -32,6 +32,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MetaObjectTest {
 
+  /**
+   * 应该获取并设置字段
+   */
   @Test
   void shouldGetAndSetField() {
     RichType rich = new RichType();
@@ -40,6 +43,9 @@ class MetaObjectTest {
     assertEquals("foo", meta.getValue("richField"));
   }
 
+  /**
+   * 应该嵌套设置获取的值
+   */
   @Test
   void shouldGetAndSetNestedField() {
     RichType rich = new RichType();
@@ -48,6 +54,9 @@ class MetaObjectTest {
     assertEquals("foo", meta.getValue("richType.richField"));
   }
 
+  /**
+   * 能够设置获取的值
+   */
   @Test
   void shouldGetAndSetProperty() {
     RichType rich = new RichType();
@@ -56,6 +65,10 @@ class MetaObjectTest {
     assertEquals("foo", meta.getValue("richProperty"));
   }
 
+
+  /**
+   * 能够递归设置获取的值
+   */
   @Test
   void shouldGetAndSetNestedProperty() {
     RichType rich = new RichType();

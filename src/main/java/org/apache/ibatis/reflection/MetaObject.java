@@ -56,9 +56,13 @@ public class MetaObject {
   private final ReflectorFactory reflectorFactory;
 
   private MetaObject(Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory) {
+
     this.originalObject = object;
+
     this.objectFactory = objectFactory;
+
     this.objectWrapperFactory = objectWrapperFactory;
+
     this.reflectorFactory = reflectorFactory;
 
     if (object instanceof ObjectWrapper) {
@@ -165,6 +169,12 @@ public class MetaObject {
     }
   }
 
+  /**
+   * 根据属性名设置值
+   *
+   * @param name
+   * @param value
+   */
   public void setValue(String name, Object value) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {

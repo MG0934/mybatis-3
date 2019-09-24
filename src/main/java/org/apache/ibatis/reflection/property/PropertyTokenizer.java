@@ -33,7 +33,7 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
    */
   private final String indexedName;
   /**
-   * 编号
+   * 编号 给集合设置值使用
    *
    * 对于数组 name[0] 则index为0
    * 对于Map map[key] 则index为key

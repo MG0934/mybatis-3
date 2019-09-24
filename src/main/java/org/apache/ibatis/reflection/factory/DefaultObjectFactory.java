@@ -55,9 +55,19 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     return (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
   }
 
+  /**
+   * 初始化类
+   *
+   * @param type 类型名称
+   * @param constructorArgTypes 参数类型
+   * @param constructorArgs 参数
+   * @param <T>
+   * @return
+   */
   private  <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
     try {
       Constructor<T> constructor;
+      //如果两个参数类型 参数为空 则为无参构造
       if (constructorArgTypes == null || constructorArgs == null) {
         //通过无参构造，创建指定类对象
         constructor = type.getDeclaredConstructor();
@@ -72,7 +82,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
           }
         }
       }
-      //使用指定构造方法，创建指定类的独享
+      //通过参数类型，使用指定构造方法，创建指定类的独享
       constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
       try {
         return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
@@ -95,6 +105,12 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     }
   }
 
+  /**
+   * 解析接口
+   *
+   * @param type
+   * @return
+   */
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {

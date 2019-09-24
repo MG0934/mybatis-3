@@ -102,6 +102,9 @@ class MetaClassTest {
     assertFalse(meta.hasSetter("[0]"));
   }
 
+  /**
+   * 循环检测每一个Get的类型
+   */
   @Test
   void shouldCheckTypeForEachGetter() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -120,6 +123,9 @@ class MetaClassTest {
     assertEquals(List.class, meta.getGetterType("richType.richList[0]"));
   }
 
+  /**
+   * 循环检测每一个set的类型
+   */
   @Test
   void shouldCheckTypeForEachSetter() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -138,6 +144,9 @@ class MetaClassTest {
     assertEquals(List.class, meta.getSetterType("richType.richList[0]"));
   }
 
+  /**
+   * 检测get和set方法名称
+   */
   @Test
   void shouldCheckGetterAndSetterNames() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -146,6 +155,9 @@ class MetaClassTest {
     assertEquals(5, meta.getSetterNames().length);
   }
 
+  /**
+   * 应该找到属性名
+   */
   @Test
   void shouldFindPropertyName() {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();

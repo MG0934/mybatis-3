@@ -38,6 +38,9 @@ import org.junit.jupiter.api.Test;
  */
 class DefaultObjectFactoryTest {
 
+  /**
+   * 通过构造器创建对象
+   */
   @Test
   void createClass() {
     DefaultObjectFactory defaultObjectFactory = new DefaultObjectFactory();
@@ -48,6 +51,9 @@ class DefaultObjectFactoryTest {
     Assertions.assertEquals("foo", testClass.myString, "myString didn't match expected");
   }
 
+  /**
+   * 创建类抛出正确的错误信息
+   */
   @Test
   void createClassThrowsProperErrorMsg() {
     DefaultObjectFactory defaultObjectFactory = new DefaultObjectFactory();
@@ -61,6 +67,9 @@ class DefaultObjectFactoryTest {
     }
   }
 
+  /**
+   * 创建hashmap
+   */
   @Test
   void creatHashMap() {
      DefaultObjectFactory defaultObjectFactory=new DefaultObjectFactory();
@@ -68,6 +77,9 @@ class DefaultObjectFactoryTest {
      Assertions.assertTrue(map instanceof HashMap, "Should be HashMap");
   }
 
+  /**
+   * 创建arrayList
+   */
   @Test
   void createArrayList() {
     DefaultObjectFactory defaultObjectFactory = new DefaultObjectFactory();
