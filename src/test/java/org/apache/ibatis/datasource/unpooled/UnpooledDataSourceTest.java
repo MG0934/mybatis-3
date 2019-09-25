@@ -28,6 +28,10 @@ import org.junit.jupiter.api.Test;
 
 class UnpooledDataSourceTest {
 
+  /**
+   * 不能多次注册同一驱动
+   * @throws Exception
+   */
   @Test
   void shouldNotRegisterTheSameDriverMultipleTimes() throws Exception {
     // https://code.google.com/p/mybatis/issues/detail?id=430
